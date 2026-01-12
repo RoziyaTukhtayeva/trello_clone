@@ -1,0 +1,45 @@
+.body {
+  width: 100%;
+  margin: 1rem;
+  border: 2px solid grey;
+  padding: 1rem;
+}
+
+.body .box div {
+  background-color: grey;
+  margin: 1rem 0;
+  padding: 1rem;
+  cursor: grab;
+}
+
+.add {
+  background-color: grey;
+  margin: 1rem 0;
+}
+
+.add input {
+  padding: 1rem;
+
+  background-color: transparent;
+  outline: none;
+  color: white;
+  outline: none;
+  border: none;
+  width: 80%;
+}
+.add input::placeholder {
+  color: whitesmoke;
+}
+
+.add button{
+    width: 20%;
+    padding: 1rem;
+    box-sizing: border-box;
+    cursor: pointer;
+    outline: none;
+    border: none;
+}
+
+.add button:hover{
+    background-color: rgb(52, 52, 52);
+}
