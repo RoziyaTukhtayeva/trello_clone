@@ -100,12 +100,20 @@
 //     </div>
 //   );
 // }
-"use client"; 
+"use client";
 
-import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import React, { useState } from "react";
 import Column from "@/components/column/Column";
-import style from './page.module.css'
+import style from "./page.module.css";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 type Task = {
@@ -140,82 +148,84 @@ export default function Home() {
       tasks: [],
     },
   ];
+  const logColumnTasks = (title: string, tasks: Task[]) => {
+    console.log(`${title} (updated):`, tasks);
+  };
 
   const addTask = (columnId: string, title: string) => {
-  setColumns(prev =>
-    prev.map(column =>
-      column.id === columnId
-        ? {
+    setColumns((prev) =>
+      prev.map((column) => {
+        if (column.id === columnId) {
+          const newTasks = [
+            ...column.tasks,
+            {
+              id: crypto.randomUUID(),
+              title,
+            },
+          ];
+
+          logColumnTasks(column.title, newTasks);
+
+          return {
             ...column,
-            tasks: [
-              ...column.tasks,
-              {
-                id: crypto.randomUUID(),
-                title,
-                order: column.tasks.length,
-                createdAt: new Date().toISOString(),
-              },
-            ],
-          }
-        : column
-    )
-  )
-}
+            tasks: newTasks,
+          };
+        }
 
+        return column;
+      })
+    );
+  };
 
-const handleDragEnd = (event: DragEndEvent) => {
-  const { active, over } = event;
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
 
-  if (!over) return;
+    if (!over) return;
 
-  const fromColumn = columns.find((col) =>
-    col.tasks.some((task) => task.id === active.id)
-  );
+    const fromColumn = columns.find((col) =>
+      col.tasks.some((task) => task.id === active.id)
+    );
 
-  const toColumn = columns.find((col) => col.id === over.id);
+    const toColumn = columns.find((col) => col.id === over.id);
 
-  if (!fromColumn || !toColumn) return;
-  if (fromColumn.id === toColumn.id) return;
+    if (!fromColumn || !toColumn) return;
+    if (fromColumn.id === toColumn.id) return;
 
-  setColumns((prev) => {
-    const movedTask = fromColumn.tasks.find(
-      (task) => task.id === active.id
-    )!;
+    setColumns((prev) => {
+      const movedTask = fromColumn.tasks.find((task) => task.id === active.id)!;
 
-    let updatedFromTasks: Task[] = [];
-    let updatedToTasks: Task[] = [];
+      let updatedFromTasks: Task[] = [];
+      let updatedToTasks: Task[] = [];
 
-    const updatedColumns = prev.map((col) => {
-      if (col.id === fromColumn.id) {
-        updatedFromTasks = col.tasks.filter(
-          (task) => task.id !== active.id
-        );
-        return {
-          ...col,
-          tasks: updatedFromTasks,
-        };
-      }
+      const updatedColumns = prev.map((col) => {
+        if (col.id === fromColumn.id) {
+          updatedFromTasks = col.tasks.filter((task) => task.id !== active.id);
+          return {
+            ...col,
+            tasks: updatedFromTasks,
+          };
+        }
 
-      if (col.id === toColumn.id) {
-        updatedToTasks = [...col.tasks, movedTask];
-        return {
-          ...col,
-          tasks: updatedToTasks,
-        };
-      }
+        if (col.id === toColumn.id) {
+          updatedToTasks = [...col.tasks, movedTask];
+          return {
+            ...col,
+            tasks: updatedToTasks,
+          };
+        }
 
-      return col;
+        return col;
+      });
+
+      // ✅ IKKALA O‘ZGARGAN USTUNNI HAM CONSOLE’DA CHIQARAMIZ
+      console.log(`${fromColumn.title} (updated):`, updatedFromTasks);
+      console.log(`${toColumn.title} (updated):`, updatedToTasks);
+
+      return updatedColumns;
     });
+  };
 
-    // ✅ IKKALA O‘ZGARGAN USTUNNI HAM CONSOLE’DA CHIQARAMIZ
-    console.log(`${fromColumn.title} (updated):`, updatedFromTasks);
-    console.log(`${toColumn.title} (updated):`, updatedToTasks);
-
-    return updatedColumns;
-  });
-};
-
-    const sensors = useSensors(
+  const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(TouchSensor),
     useSensor(KeyboardSensor, {
@@ -229,8 +239,11 @@ const handleDragEnd = (event: DragEndEvent) => {
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <div className={style.blocks}>
           {columns.map((column, index) => (
-            <Column key={column.id} column={column}     onAddTask={index === 0 ? addTask : undefined}
- />
+            <Column
+              key={column.id}
+              column={column}
+              onAddTask={index === 0 ? addTask : undefined}
+            />
           ))}
         </div>
       </DndContext>
