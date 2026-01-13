@@ -65,7 +65,10 @@ import { useDroppable } from "@dnd-kit/core";
 import { Card } from "./Card";
 import style from "./Column.module.css";
 import { useState } from "react";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 type Task = {
   id: string;
@@ -92,13 +95,12 @@ const Column = ({ column, onAddTask }: ColumnT) => {
   return (
     <div ref={setNodeRef} className={style.body}>
       <h3>{column.title}</h3>
-         {onAddTask && (
+      {onAddTask && (
         <div className={style.add}>
           <input
             value={value}
             onChange={(e) => setValue(e.target.value)}
             placeholder="Add a task..."
-            className="border p-1 w-full"
           />
           <button
             onClick={() => {
@@ -111,17 +113,16 @@ const Column = ({ column, onAddTask }: ColumnT) => {
           </button>
         </div>
       )}
-        <SortableContext
-      items={column.tasks.map(t => t.id)}
-      strategy={verticalListSortingStrategy}
-    >
-      <div className={style.box}>
-        {column.tasks.map((task) => (
-          <Card key={task.id} task={task} />
-        ))}
-      </div>
-</SortableContext>
-   
+      <SortableContext
+        items={column.tasks.map((t) => t.id)}
+        strategy={verticalListSortingStrategy}
+      >
+        <div className={style.box}>
+          {column.tasks.map((task) => (
+            <Card key={task.id} task={task} />
+          ))}
+        </div>
+      </SortableContext>
     </div>
   );
 };

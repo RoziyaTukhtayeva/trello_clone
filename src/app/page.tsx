@@ -190,6 +190,12 @@ export default function Home() {
           const movedTask = fromColumn.tasks.find(
             (task) => task.id === active.id
           );
+  //          alert(
+  //   `"${movedTask?.title}" ${fromColumn.title} → ${toColumn.title} ga ko‘chirildi`
+  // );
+    const newTasks = [...col.tasks, movedTask];
+
+      console.log(toColumn.title, newTasks);
           return {
             ...col,
             tasks: [...col.tasks, movedTask!],
