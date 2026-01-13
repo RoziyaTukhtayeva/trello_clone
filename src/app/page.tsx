@@ -104,7 +104,7 @@
 
 import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import React, { useState } from "react";
-import Column from "./components/column/Column";
+import Column from "@/components/column/Column";
 import style from './page.module.css'
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
