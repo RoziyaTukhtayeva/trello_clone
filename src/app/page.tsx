@@ -100,7 +100,7 @@
 //     </div>
 //   );
 // }
-"use client";
+"use client"; 
 
 import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import React, { useState } from "react";
