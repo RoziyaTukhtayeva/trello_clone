@@ -163,49 +163,58 @@ export default function Home() {
 }
 
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
+const handleDragEnd = (event: DragEndEvent) => {
+  const { active, over } = event;
 
-    if (!over) return;
+  if (!over) return;
 
-    const fromColumn = columns.find((col) =>
-      col.tasks.some((task) => task.id === active.id)
-    );
+  const fromColumn = columns.find((col) =>
+    col.tasks.some((task) => task.id === active.id)
+  );
 
-    const toColumn = columns.find((col) => col.id === over.id);
+  const toColumn = columns.find((col) => col.id === over.id);
 
-    if (!fromColumn || !toColumn) return;
-    if (fromColumn.id === toColumn.id) return;
+  if (!fromColumn || !toColumn) return;
+  if (fromColumn.id === toColumn.id) return;
 
-    setColumns((prev) =>
-      prev.map((col) => {
-        if (col.id === fromColumn.id) {
-          return {
-            ...col,
-            tasks: col.tasks.filter((task) => task.id !== active.id),
-          };
-        }
+  setColumns((prev) => {
+    const movedTask = fromColumn.tasks.find(
+      (task) => task.id === active.id
+    )!;
 
-        if (col.id === toColumn.id) {
-          const movedTask = fromColumn.tasks.find(
-            (task) => task.id === active.id
-          );
-  //          alert(
-  //   `"${movedTask?.title}" ${fromColumn.title} → ${toColumn.title} ga ko‘chirildi`
-  // );
-    const newTasks = [...col.tasks, movedTask];
+    let updatedFromTasks: Task[] = [];
+    let updatedToTasks: Task[] = [];
 
-      console.log(toColumn.title, newTasks);
-          return {
-            ...col,
-            tasks: [...col.tasks, movedTask!],
-          };
-        }
+    const updatedColumns = prev.map((col) => {
+      if (col.id === fromColumn.id) {
+        updatedFromTasks = col.tasks.filter(
+          (task) => task.id !== active.id
+        );
+        return {
+          ...col,
+          tasks: updatedFromTasks,
+        };
+      }
 
-        return col;
-      })
-    );
-  };
+      if (col.id === toColumn.id) {
+        updatedToTasks = [...col.tasks, movedTask];
+        return {
+          ...col,
+          tasks: updatedToTasks,
+        };
+      }
+
+      return col;
+    });
+
+    // ✅ IKKALA O‘ZGARGAN USTUNNI HAM CONSOLE’DA CHIQARAMIZ
+    console.log(`${fromColumn.title} (updated):`, updatedFromTasks);
+    console.log(`${toColumn.title} (updated):`, updatedToTasks);
+
+    return updatedColumns;
+  });
+};
+
     const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(TouchSensor),
