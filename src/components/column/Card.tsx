@@ -7,7 +7,7 @@ export const Card = ({ task }: { task: TaskT }) => {
       id: task.id,
     })
 
-  return (
+  return ( 
     <div
       ref={setNodeRef}
       {...listeners}
